@@ -1,7 +1,7 @@
 // MemoReal Production Configuration
 const MEMOREAL_CONFIG = {
     // Multiplayer server URL (Heroku)
-    MULTIPLAYER_SERVER: 'https://memoreal-multiplayer-server-957d632c1d60.herokuapp.com',
+    MULTIPLAYER_SERVER: 'https://memoreal-957d632c1d60.herokuapp.com',
     
     // Frontend URL (Hostinger)
     FRONTEND_URL: 'https://memoreal.pratikmane.tech',
