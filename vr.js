@@ -408,9 +408,24 @@ function updatePointCloudSampling(rate) {
 
     // Create point cloud
     pointCloud = new THREE.Points(newGeometry, pointCloudMaterial);
-    pointCloud.position.set(0, 7, 2); // Same position as room model
-    pointCloud.scale.set(3, 3, 3); // Same scale as room model
-    pointCloud.rotation.set(Math.PI/2, Math.PI*2, Math.PI/2); // 90° rotation for 360 generation
+    
+    // Apply different settings based on content type
+    const urlParams = new URLSearchParams(window.location.search);
+    const contentType = urlParams.get('type');
+    
+    if (contentType === '360') {
+        // 360° content settings
+        pointCloud.position.set(0, 7, 2); // Different position for 360
+        pointCloud.scale.set(3, 3, 3); // Same scale as room model
+        pointCloud.rotation.set(Math.PI/2, Math.PI*2, Math.PI/2); // 90° rotation for 360 generation
+        console.log('Applied 360° settings: position(0,7,2), rotation(90°,360°,90°)');
+    } else {
+        // 3D content settings (no rotation)
+        pointCloud.position.set(0, 3.05, 2); // Same position as room model
+        pointCloud.scale.set(3, 3, 3); // Same scale as room model
+        pointCloud.rotation.set(0, Math.PI, 0); // 180° Y rotation for 3D content
+        console.log('Applied 3D settings: position(0,3.05,2), rotation(0°,180°,0°)');
+    }
 
     // Add to A-Frame scene
     const threeScene = document.querySelector('a-scene').object3D;
@@ -639,9 +654,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Start animation loop
         animateParticles();
         
-        // Get model URL from URL parameters - REQUIRED
+        // Get model URL and type from URL parameters - REQUIRED
         const urlParams = new URLSearchParams(window.location.search);
         const modelUrl = urlParams.get('model');
+        const contentType = urlParams.get('type'); // '3d' or '360'
         
         console.log('=== URL ANALYSIS ===');
         console.log('Current URL:', window.location.href);
@@ -652,6 +668,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(`- ${key}: ${value}`);
         }
         console.log('Model URL from parameter (raw):', urlParams.get('model'));
+        console.log('Content Type from parameter:', contentType);
         console.log('Final model URL to load:', modelUrl);
         
         if (!modelUrl) {

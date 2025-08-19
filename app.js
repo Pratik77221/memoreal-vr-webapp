@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileLabel3d = document.getElementById('file-label-3d');
     const fileLabel360 = document.getElementById('file-label-360');
     const fileInputVideoLabel = document.getElementById('file-label-video');
-    let modelUrl = '';
+        let modelUrl = null;
+    let currentContentType = null; // Track if it's '3d' or '360' content
 
     // File input handling for 3D images
     fileInput3d.addEventListener('change', function() {
@@ -373,6 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         console.log('3D Generation starting with file:', imageFile.name);
+        currentContentType = '3d'; // Set content type for VR rotation
         generateScene(imageFile, 'generate-scene', generate3dBtn);
     };
 
@@ -384,6 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         console.log('360° Generation starting with file:', imageFile.name);
+        currentContentType = '360'; // Set content type for VR rotation
         generateScene(imageFile, 'generate-360-scene', generate360Btn);
     };
 
@@ -423,10 +426,12 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             // Regular 3D model - redirect to vr.html
             const encodedUrl = encodeURIComponent(modelUrl);
-            const fullVrUrl = `vr.html?model=${encodedUrl}`;
+            const typeParam = currentContentType ? `&type=${currentContentType}` : '';
+            const fullVrUrl = `vr.html?model=${encodedUrl}${typeParam}`;
             console.log('Navigating to VR:');
             console.log('- Original URL:', modelUrl);
             console.log('- Encoded URL:', encodedUrl);
+            console.log('- Content Type:', currentContentType);
             console.log('- Full VR URL:', fullVrUrl);
             
             window.location.href = fullVrUrl;
