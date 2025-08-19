@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoReal - Turn Your Images into VR Experiences</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="config.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>MemoReal</h1>
+        
+        <div class="upload-options">
+            <div class="upload-option">
+                <h3>3D Image</h3>
+                <p>Upload a regular image to create a 3D scene</p>
+                <div class="file-input-wrapper">
+                    <input type="file" id="image3d" accept="image/*">
+                    <label for="image3d" class="file-input-label" id="file-label-3d">
+                        Choose 3D image
+                    </label>
+                </div>
+                <button id="generate3dBtn" class="btn-primary" disabled>Generate 3D Scene</button>
+            </div>
+            
+            <div class="upload-option">
+                <h3>360° Image</h3>
+                <p>Upload a panoramic image to create a 360° VR scene</p>
+                <div class="file-input-wrapper">
+                    <input type="file" id="image360" accept="image/*">
+                    <label for="image360" class="file-input-label" id="file-label-360">
+                        Choose 360° image
+                    </label>
+                </div>
+                <button id="generate360Btn" class="btn-primary" disabled>Generate 360° Scene</button>
+            </div>
+            
+            <div class="upload-option">
+                <h3>Video to Hologram</h3>
+                <p>Upload a video to create a VR hologram experience</p>
+                <div class="file-input-wrapper">
+                    <input type="file" id="videoFile" accept="video/*">
+                    <label for="videoFile" class="file-input-label" id="file-label-video">
+                        Choose video file
+                    </label>
+                </div>
+                <button id="generateVideoBtn" class="btn-primary" disabled>Generate Video Hologram</button>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button id="vrBtn" class="btn-secondary" disabled>
+                Enter VR 
+                <small style="display: block; font-size: 0.8em; margin-top: 4px;">Multiplayer Enabled</small>
+            </button>
+        </div>
+        
+        <div id="status"></div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

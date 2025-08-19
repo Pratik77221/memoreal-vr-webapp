@@ -1,0 +1,24 @@
+{
+  "name": "memoreal-frontend",
+  "version": "1.0.0",
+  "description": "MemoReal VR Application with Multiplayer Support",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo 'Building MemoReal App...' && npm install",
+    "dev": "concurrently \"node server.js\" \"live-server --port=3000 --open=index.html\"",
+    "server": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "open-easyrtc": "^2.1.0",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "live-server": "^1.2.2"
+  },
+  "keywords": ["vr", "multiplayer", "aframe", "3d", "memoreal"],
+  "author": "MemoReal Team",
+  "license": "MIT"
+}

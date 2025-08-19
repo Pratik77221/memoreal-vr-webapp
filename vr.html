@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoReal - Multiplayer VR Experience</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.167.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.167.0/examples/jsm/"
+        }
+      }
+    </script>
+    
+    <!-- A-Frame Core -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    
+    <!-- A-Frame Extras for movement controls -->
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.4.0/dist/aframe-extras.min.js"></script>
+    
+    <!-- Configuration -->
+    <script src="config.js"></script>
+    
+    <!-- Networking Dependencies (order matters!) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.min.js"></script>
+    <script src="/easyrtc/easyrtc.js"></script>
+    <script src="networked-aframe.min.js"></script>
+    
+    <script>
+        // Random color component (from working multiplayer)
+        AFRAME.registerComponent('random-color', {
+            init: function () {
+                const colors = ['red', 'green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'cyan'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                this.el.setAttribute('material', { color: randomColor });
+            }
+        });
+
+        // Schema setup
+        NAF.schemas.getComponentsOriginal = NAF.schemas.getComponents;
+        NAF.schemas.getComponents = (template) => {
+            if (!NAF.schemas.hasTemplate("#avatar-template")) {
+                NAF.schemas.add({
+                    template: "#avatar-template",
+                    components: [
+                        {
+                            component: "position",
+                            requiresNetworkUpdate: NAF.utils.vectorRequiresUpdate(0.001),
+                        },
+                        {
+                            component: "rotation",
+                            requiresNetworkUpdate: NAF.utils.vectorRequiresUpdate(0.5),
+                        },
+                        {
+                            selector: ".head",
+                            component: "material",
+                            property: "color",
+                        },
+                    ],
+                });
+            }
+
+            if (!NAF.schemas.hasTemplate("#rig-template")) {
+                NAF.schemas.add({
+                    template: "#rig-template",
+                    components: [
+                        {
+                            component: "position",
+                            requiresNetworkUpdate: NAF.utils.vectorRequiresUpdate(0.001),
+                        },
+                        {
+                            component: "rotation",
+                            requiresNetworkUpdate: NAF.utils.vectorRequiresUpdate(0.5),
+                        },
+                    ],
+                });
+            }
+            return NAF.schemas.getComponentsOriginal(template);
+        };
+    </script>
+</head>
+<body class="vr-body">
+    <!-- Controls -->
+    <div class="vr-controls">
+        <a href="index.html" class="vr-btn vr-btn-secondary">← Back</a>
+        <button id="enterVRBtn" class="vr-btn">Enter VR</button>
+        <div id="multiplayerStatus" class="multiplayer-status">
+            <span id="connectionStatus">Connecting...</span>
+        </div>
+    </div>
+
+    <a-scene 
+        id="scene" 
+        background="color: #1a1a1a" 
+        vr-mode-ui="enabled: true"
+        networked-scene="
+            room: test-room;
+            debug: false;
+            adapter: wseasyrtc;
+        ">
+        
+        <a-assets>
+            <!-- Templates -->
+            <!-- Camera Rig / Player (rig syncs motion; camera uses avatar template) -->
+            <template id="rig-template">
+                <a-entity></a-entity>
+            </template>
+
+            <!-- Avatar Template -->
+            <template id="avatar-template">
+                <a-entity class="avatar">
+                    <a-sphere class="head" scale="0.2 0.22 0.2" random-color></a-sphere>
+                    <a-entity class="face" position="0 0.05 0">
+                        <a-sphere
+                            class="eye"
+                            color="white"
+                            position="0.06 0.05 -0.16"
+                            scale="0.04 0.04 0.04">
+                            <a-sphere
+                                class="pupil"
+                                color="black"
+                                position="0 0 -1"
+                                scale="0.2 0.2 0.2">
+                            </a-sphere>
+                        </a-sphere>
+                        <a-sphere
+                            class="eye"
+                            color="white"
+                            position="-0.06 0.05 -0.16"
+                            scale="0.04 0.04 0.04">
+                            <a-sphere
+                                class="pupil"
+                                color="black"
+                                position="0 0 -1"
+                                scale="0.2 0.2 0.2">
+                            </a-sphere>
+                        </a-sphere>
+                    </a-entity>
+                </a-entity>
+            </template>
+        </a-assets>
+
+        <!-- Particle System Container -->
+        <a-entity id="particleContainer" position="0 2 2"></a-entity>
+
+        <!-- Ground Plane -->
+        <a-plane
+            rotation="-90 0 0"
+            width="50"
+            height="50"
+            position="0 -1 0"
+            material="color: #444444; side: double">
+        </a-plane>
+
+        <!-- Basic Lighting -->
+        <a-light type="ambient" color="#ffffff" intensity="0.6"></a-light>
+        <a-light type="directional" position="5 5 5" intensity="0.8"></a-light>
+
+        <!-- Player -->
+        <!-- Camera Rig (movement-controls for camera-relative motion; networked to sync position/rotation) -->
+        <a-entity
+            id="rig"
+            position="0 1.6 3"
+            movement-controls="fly: false; constrainToNavMesh: false;"
+            networked="template:#rig-template; attachTemplateToLocal:false;">
+            
+            <!-- Camera (for looking) - networked to spawn your avatar for others; hidden locally -->
+            <a-entity
+                id="player"
+                camera
+                position="0 0 0"
+                look-controls
+                networked="template:#avatar-template; attachTemplateToLocal:false;"
+                visible="false"
+                raycaster="objects: .clickable; showLine: true"
+                cursor="rayOrigin: mouse">
+            </a-entity>
+
+            <!-- VR Controllers (networked-hand-controls are visible to others; laser-controls are local pointers) -->
+            <a-entity
+                id="leftHand"
+                networked="template:#left-hand-default-template; attachTemplateToLocal:false; networkId:leftHand"
+                networked-hand-controls="hand: left"
+                laser-controls="hand: left"
+                raycaster="objects: .clickable; showLine: true">
+            </a-entity>
+            <a-entity
+                id="rightHand"
+                networked="template:#right-hand-default-template; attachTemplateToLocal:false; networkId:rightHand"
+                networked-hand-controls="hand: right"
+                laser-controls="hand: right"
+                raycaster="objects: .clickable; showLine: true">
+            </a-entity>
+        </a-entity>
+    </a-scene>
+
+    <script src="vr.js"></script>
+</body>
+</html>
