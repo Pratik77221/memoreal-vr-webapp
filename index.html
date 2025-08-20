@@ -4,63 +4,328 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MemoReal - Turn Your Images into VR Experiences</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="config.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+        .media-container {
+            transition: transform 0.3s ease;
+        }
+        .media-container:hover {
+            transform: scale(1.02);
+        }
+        .upload-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            transition: all 0.3s ease;
+        }
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <h1>MemoReal</h1>
+<body class="min-h-screen gradient-bg text-white">
+    <!-- Hero Section -->
+    <div class="text-center py-12 px-6">
+        <h1 class="text-6xl font-black mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">MemoReal</h1>
+        <p class="text-xl text-gray-300 max-w-2xl mx-auto">Transform your memories into immersive VR experiences</p>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
         
-        <div class="upload-options">
-            <div class="upload-option">
-                <h3>3D Image</h3>
-                <p>Upload a regular image to create a 3D scene</p>
-                <div class="file-input-wrapper">
-                    <input type="file" id="image3d" accept="image/*">
-                    <label for="image3d" class="file-input-label" id="file-label-3d">
-                        Choose 3D image
-                    </label>
-                </div>
-                <button id="generate3dBtn" class="btn-primary" disabled>Generate 3D Scene</button>
+        <!-- Upload Options Section -->
+        <div class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    Choose Your Experience
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Upload your content and transform it into immersive VR experiences
+                </p>
             </div>
-            
-            <div class="upload-option">
-                <h3>360° Image</h3>
-                <p>Upload a panoramic image to create a 360° VR scene</p>
-                <div class="file-input-wrapper">
-                    <input type="file" id="image360" accept="image/*">
-                    <label for="image360" class="file-input-label" id="file-label-360">
-                        Choose 360° image
-                    </label>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <!-- 2D to 3D Option -->
+                <div class="feature-card rounded-2xl border border-slate-700 bg-slate-800/40 p-8 backdrop-blur-sm text-center">
+                    <div class="w-16 h-16 rounded-full bg-blue-600/20 flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-2xl mb-4">2D to 3D</h3>
+                    <p class="text-gray-300 mb-6">Transform flat images into stunning 3D experiences</p>
+                    
+                    <div class="file-input-wrapper mb-4">
+                        <input type="file" id="image3d" accept="image/*" class="hidden">
+                        <label for="image3d" class="upload-btn cursor-pointer inline-flex items-center gap-3 px-6 py-3 rounded-lg text-white font-semibold mx-auto">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <span id="file-label-3d">Choose 3D Image</span>
+                        </label>
+                    </div>
+                    <button id="generate3dBtn" class="w-full upload-btn text-white font-semibold py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        Generate 3D Scene
+                    </button>
                 </div>
-                <button id="generate360Btn" class="btn-primary" disabled>Generate 360° Scene</button>
+
+                <!-- 360° Image Option -->
+                <div class="feature-card rounded-2xl border border-slate-700 bg-slate-800/40 p-8 backdrop-blur-sm text-center">
+                    <div class="w-16 h-16 rounded-full bg-purple-600/20 flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-2xl mb-4">360° Image</h3>
+                    <p class="text-gray-300 mb-6">Create immersive 360-degree VR experiences</p>
+                    
+                    <div class="file-input-wrapper mb-4">
+                        <input type="file" id="image360" accept="image/*" class="hidden">
+                        <label for="image360" class="upload-btn cursor-pointer inline-flex items-center gap-3 px-6 py-3 rounded-lg text-white font-semibold mx-auto">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <span id="file-label-360">Choose 360° Image</span>
+                        </label>
+                    </div>
+                    <button id="generate360Btn" class="w-full upload-btn text-white font-semibold py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        Generate 360° Scene
+                    </button>
+                </div>
+
+                <!-- Video to Hologram Option -->
+                <div class="feature-card rounded-2xl border border-slate-700 bg-slate-800/40 p-8 backdrop-blur-sm text-center">
+                    <div class="w-16 h-16 rounded-full bg-green-600/20 flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-2xl mb-4">Video Hologram</h3>
+                    <p class="text-gray-300 mb-6">Transform videos into holographic experiences</p>
+                    
+                    <div class="file-input-wrapper mb-4">
+                        <input type="file" id="videoFile" accept="video/*" class="hidden">
+                        <label for="videoFile" class="upload-btn cursor-pointer inline-flex items-center gap-3 px-6 py-3 rounded-lg text-white font-semibold mx-auto">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <span id="file-label-video">Choose Video File</span>
+                        </label>
+                    </div>
+                    <button id="generateVideoBtn" class="w-full upload-btn text-white font-semibold py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        Generate Video Hologram
+                    </button>
+                </div>
             </div>
-            
-            <div class="upload-option">
-                <h3>Video to Hologram</h3>
-                <p>Upload a video to create a VR hologram experience</p>
-                <div class="file-input-wrapper">
-                    <input type="file" id="videoFile" accept="video/*">
-                    <label for="videoFile" class="file-input-label" id="file-label-video">
-                        Choose video file
-                    </label>
+
+            <!-- VR Entry Section -->
+            <div class="text-center bg-gradient-to-r from-indigo-900/30 to-purple-900/30 rounded-2xl border border-indigo-800/50 p-8">
+                <h3 class="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    Ready to Enter VR?
+                </h3>
+                <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+                    Experience your created content in multiplayer VR with friends and family.
+                </p>
+                <button id="vrBtn" class="upload-btn px-8 py-4 text-white font-bold text-lg rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 mx-auto" disabled>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    <div>
+                        <div>Enter VR World</div>
+                        <small class="block text-sm opacity-80">Multiplayer Enabled</small>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Examples Section -->
+        <div class="border-t border-slate-700/50 pt-16">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    See What's Possible
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Discover the transformations from input to immersive VR output
+                </p>
+            </div>
+            <!-- 2D to 3D Example -->
+            <div class="mb-20">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold mb-4 text-blue-400">2D to 3D Conversion</h3>
+                    <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+                        Transform your flat 2D images into stunning 3D experiences with AI-powered depth analysis.
+                    </p>
                 </div>
-                <button id="generateVideoBtn" class="btn-primary" disabled>Generate Video Hologram</button>
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="text-center">
+                        <h4 class="text-xl font-semibold mb-6 text-blue-400 flex items-center justify-center gap-2">
+                            <span class="w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </span>
+                            Input: 2D Image
+                        </h4>
+                        <div class="media-container rounded-xl overflow-hidden border border-slate-600 shadow-2xl">
+                            <img 
+                                src="./Assets/3dimage/bedroom.png" 
+                                alt="2D Input Example" 
+                                class="w-full h-80 object-cover"
+                                onerror="this.src='https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=900&auto=format&fit=crop'"
+                            />
+                        </div>
+                        <p class="text-sm text-gray-400 mt-4">Original 2D bedroom image</p>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="text-xl font-semibold mb-6 text-green-400 flex items-center justify-center gap-2">
+                            <span class="w-8 h-8 rounded-full bg-green-600/20 flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                            </span>
+                            Output: 3D Video
+                        </h4>
+                        <div class="media-container rounded-xl overflow-hidden border border-slate-600 shadow-2xl">
+                            <video 
+                                src="./Assets/3dimage/2D_to_3D.mp4" 
+                                class="w-full h-80 object-cover" 
+                                autoplay 
+                                muted 
+                                loop
+                                poster="https://via.placeholder.com/400x320/1e293b/64748b?text=3D+Video+Output"
+                            ></video>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-4">Immersive 3D video experience</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 360° Image Example -->
+            <div class="mb-20">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold mb-4 text-purple-400">360° Image Experience</h3>
+                    <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+                        Upload panoramic images to create immersive 360-degree VR experiences.
+                    </p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="text-center">
+                        <h4 class="text-xl font-semibold mb-6 text-purple-400 flex items-center justify-center gap-2">
+                            <span class="w-8 h-8 rounded-full bg-purple-600/20 flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </span>
+                            Input: 360° Image
+                        </h4>
+                        <div class="media-container rounded-xl overflow-hidden border border-slate-600 shadow-2xl">
+                            <img 
+                                src="./Assets/360image/WhatsApp Image 2025-07-05 at 16.44.36.jpeg" 
+                                alt="360 Input Example" 
+                                class="w-full h-80 object-cover"
+                                onerror="this.src='https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=900&auto=format&fit=crop'"
+                            />
+                        </div>
+                        <p class="text-sm text-gray-400 mt-4">Panoramic 360° photograph</p>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="text-xl font-semibold mb-6 text-green-400 flex items-center justify-center gap-2">
+                            <span class="w-8 h-8 rounded-full bg-green-600/20 flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-9 0v16a2 2 0 002 2h6a2 2 0 002-2V4M9 9h6m-6 4h6"></path>
+                                </svg>
+                            </span>
+                            Output: VR Scene
+                        </h4>
+                        <div class="media-container rounded-xl overflow-hidden border border-slate-600 shadow-2xl">
+                            <video 
+                                src="./Assets/360image/360_Mesh.mp4" 
+                                class="w-full h-80 object-cover" 
+                                autoplay 
+                                muted 
+                                loop
+                                poster="https://via.placeholder.com/400x320/1e293b/64748b?text=360+VR+Scene"
+                            ></video>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-4">Interactive 360° VR scene</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video to Hologram Example -->
+            <div class="mb-20">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold mb-4 text-green-400">Video to Hologram</h3>
+                    <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+                        Transform videos into interactive holographic experiences in virtual reality.
+                    </p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="text-center">
+                        <h4 class="text-xl font-semibold mb-6 text-blue-400 flex items-center justify-center gap-2">
+                            <span class="w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                            </span>
+                            Input: Video
+                        </h4>
+                        <div class="media-container rounded-xl overflow-hidden border border-slate-600 shadow-2xl">
+                            <video 
+                                src="./Assets/360 video/Tokyo-Walk_rgb.mp4" 
+                                class="w-full h-80 object-cover" 
+                                autoplay 
+                                muted 
+                                loop
+                                poster="https://via.placeholder.com/400x320/1e293b/64748b?text=Input+Video"
+                            ></video>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-4">360° Tokyo street walk footage</p>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="text-xl font-semibold mb-6 text-green-400 flex items-center justify-center gap-2">
+                            <span class="w-8 h-8 rounded-full bg-green-600/20 flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                </svg>
+                            </span>
+                            Output: Hologram
+                        </h4>
+                        <div class="media-container rounded-xl overflow-hidden border border-slate-600 shadow-2xl">
+                            <video 
+                                src="./Assets/360 video/3D_Hologram_Video.mp4" 
+                                class="w-full h-80 object-cover" 
+                                autoplay 
+                                muted 
+                                loop
+                                poster="https://via.placeholder.com/400x320/1e293b/64748b?text=Hologram+Output"
+                            ></video>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-4">Interactive VR hologram experience</p>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <div class="button-group">
-            <button id="vrBtn" class="btn-secondary" disabled>
-                Enter VR 
-                <small style="display: block; font-size: 0.8em; margin-top: 4px;">Multiplayer Enabled</small>
-            </button>
-        </div>
-        
-        <div id="status"></div>
+        <div id="status" class="mt-8 text-center text-gray-300"></div>
     </div>
     
     <script src="app.js"></script>
